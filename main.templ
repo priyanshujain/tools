@@ -1,0 +1,47 @@
+package main
+
+templ layout() {
+	<html lang="en">
+        <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <meta name="color-scheme" content="light dark" />
+            <title>JSON formatter</title>
+            <meta name="description" content="Convert epoch to human-readable date and vice versa" />
+
+            <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.jade.min.css"
+            />
+            <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+        </head>
+        <body>
+            <main class="container">
+                { children... }
+            </main>
+        </body>
+    </html>
+}
+
+templ Index() {
+    @layout() {
+        <script>
+            function format() {
+                var val = document.getElementById("json").value;
+                var content = document.getElementById("content");
+                val = JSON.parse(val);
+                content.innerHTML = "<pre><code>" + JSON.stringify(val, null, 4) + "</code></pre>";
+            }
+        </script>
+        <input type="text" name="json" id="json" />
+        <button onclick="format()">Format</button>
+        <br />
+        <br />
+        <div id="content" />
+    }
+}
+
+templ Error(message string) {
+        <h1>An Error Occurred</h1>
+        <p>{ message }</p>
+}
