@@ -56,6 +56,10 @@ templ Index() {
                         <td><a href="https://epoch.ossbox.org">Epoch Converter</a></td>
                         <td>Epoch & Unix Timestamp Conversion</td>
                     </tr>
+                    <tr>
+                        <td><a href="https://notes.ossbox.org">Quick notes</a></td>
+                        <td>Full-Screen Text Area App</td>
+                    </tr>
                 </tbody>
                 </table>
         </div>
@@ -101,4 +105,75 @@ templ JSONFormatter() {
 templ Error(message string) {
         <h1>An Error Occurred</h1>
         <p>{ message }</p>
+}
+
+templ NotesApp() {
+    <html>
+        <head>
+            <title>Full-Screen Text Area App</title>
+            <style>
+                body {
+                    width: 100vw;
+                    margin: 0;
+                    padding: 0;
+                }
+
+                /* Light Theme */
+                @media (prefers-color-scheme: light) {
+                    textarea {
+                        background-color: #ffffff; /* White background */
+                        color: #000000;            /* Black text */
+                    }
+                }
+
+                /* Dark Theme */
+                @media (prefers-color-scheme: dark) {
+                    textarea {
+                        background-color: #13171f; /* Dark background */
+                        color: #ffffff;            /* White text */
+                    }
+            </style>
+        </head>
+        <body style="overflow: hidden">
+            <div id="root">
+                <textarea
+                    id="noteArea"
+                    wrap="on"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="true"
+                    aria-haspopup="false"
+                    aria-autocomplete="both"
+                    role="textbox"
+                    placeholder="Type your note here..."
+                    style="
+                        resize: none;
+                        width: 100vw;
+                        padding: 36px;
+                        height: 100vh;
+                        font-size: 1.5rem;
+                        border: none;
+                        overflow-x: hidden;
+                        max-width: 100%;
+                        margin: auto;
+                        font-family: &quot;Monaco&quot;, &quot;JetBrains Mono&quot;,
+                            monospace;
+                        caret-color: #000;
+                    "
+                ></textarea>
+            </div>
+            <script>
+                const noteArea = document.getElementById("noteArea");
+                noteArea.addEventListener("change", () => {
+                    localStorage.setItem("ossbox-notes", noteArea.value);
+                });
+
+                // Load saved note on page load
+                const savedNote = localStorage.getItem("ossbox-notes");
+                if (savedNote) {
+                    noteArea.value = savedNote;
+                }
+            </script>
+        </body>
+    </html>
 }
