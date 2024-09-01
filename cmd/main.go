@@ -8,6 +8,7 @@ import (
 
 	"github.com/priyanshujain/tools/generic/panichandler"
 	"github.com/priyanshujain/tools/json"
+	"github.com/priyanshujain/tools/notes"
 	"github.com/priyanshujain/tools/templates"
 )
 
@@ -38,6 +39,8 @@ func main() {
 	switch app {
 	case "json":
 		h = json.NewJSONToolHTTPHandler()
+	case "notes":
+		h = notes.NewNotesHTTPHandler()
 	default:
 		h = NewHTTPHandler()
 	}
