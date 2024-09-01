@@ -1,0 +1,104 @@
+package templates
+
+templ layout() {
+	<html lang="en">
+        <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <meta name="color-scheme" content="light dark" />
+            <title>OSSBOX - Free open source tools for everyone's need</title>
+            <meta name="description" content="tools like json formatter, url shortner, qr generator, qr reader etc." />
+
+            <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.jade.min.css"
+            />
+            <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+        </head>
+        <body>
+            <main class="container">
+                { children... }
+            </main>
+        </body>
+    </html>
+}
+
+templ Index() {
+    @layout() {
+        <div>
+        <hgroup>
+            <h1>OSSBOX</h1>
+            <p>A box of free open source tools for everyone's need</p>
+        </hgroup>
+
+        <div class="grid" style="margin: 32 0 0 0">
+            <table class="striped">
+                <thead>
+                    <tr>
+                        <th>Tool Name</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="https://json.ossbox.org">JSON Formatter</a></td>
+                        <td>Validate and format JSON from text</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://url.ossbox.org">URL Shortner</a></td>
+                        <td>Shorten your long URLs</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://qr.ossbox.org">QR Scanner/ Generator</a></td>
+                        <td>Generate or scan QR</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://epoch.ossbox.org">Epoch Converter</a></td>
+                        <td>Epoch & Unix Timestamp Conversion</td>
+                    </tr>
+                </tbody>
+                </table>
+        </div>
+        </div>
+    }
+}
+
+templ JSONFormatter() {
+    @layout() {
+        <script>
+            function isEscaped(jsonString) {
+                return /\\["\\\/bfnrtu]/.test(jsonString);
+            }
+            function format() {
+                var val = document.getElementById("json").value;
+                if (!val) {
+                    return;
+                }
+                if (isEscaped(val)) {
+                    val = JSON.parse(val);
+                }
+                var content = document.getElementById("content");
+                try {
+                    val = JSON.parse(val);
+                } catch (e) {
+                    content.innerHTML = e;
+                    return;
+                }
+                content.innerHTML = "<pre><code>" + JSON.stringify(val, null, 4) + "</code></pre>";
+            }
+        </script>
+        <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
+        <form target="dummyframe">
+            <input type="text" name="json" id="json" required/>
+            <button onclick="format()">Format</button>
+        </form>
+        <br />
+        <br />
+        <div id="content" />
+    }
+}
+
+templ Error(message string) {
+        <h1>An Error Occurred</h1>
+        <p>{ message }</p>
+}
