@@ -2,6 +2,6 @@ tools
 
 bin/*
 
-index.html
+# index.html
 
 *.html
