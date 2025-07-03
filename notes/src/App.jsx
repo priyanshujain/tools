@@ -5,7 +5,6 @@ import './App.css'
 function App() {
   const [notes, setNotes] = useState('')
   const [isDarkMode, setIsDarkMode] = useState(false)
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
   // Load notes from localStorage on component mount
   useEffect(() => {
@@ -21,15 +20,11 @@ function App() {
     }
   }, [])
 
-  // Save notes to localStorage whenever notes change
+  // Save to localStorage whenever notes or theme change
   useEffect(() => {
-    if (notes !== localStorage.getItem('notes-app-content')) {
-      localStorage.setItem('notes-app-content', notes)
-      setHasUnsavedChanges(false)
-    }
+    localStorage.setItem('notes-app-content', notes)
   }, [notes])
 
-  // Save theme preference
   useEffect(() => {
     localStorage.setItem('notes-app-theme', isDarkMode ? 'dark' : 'light')
     document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light')
@@ -52,7 +47,6 @@ function App() {
 
   const handleNotesChange = (e) => {
     setNotes(e.target.value)
-    setHasUnsavedChanges(true)
   }
 
   const toggleTheme = () => {
