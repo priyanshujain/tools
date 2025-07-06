@@ -32,9 +32,7 @@ function App() {
   }, [])
 
 
-  useEffect(() => {
-    localStorage.setItem('notes-app-active-tab', activeTab.toString())
-  }, [activeTab])
+  // Don't save activeTab on mount, only when user changes it
 
   useEffect(() => {
     localStorage.setItem('notes-app-theme', isDarkMode ? 'dark' : 'light')
@@ -73,6 +71,7 @@ function App() {
 
   const switchTab = (tabNumber) => {
     setActiveTab(tabNumber)
+    localStorage.setItem('notes-app-active-tab', tabNumber.toString())
   }
 
   const toggleTheme = () => {
