@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react'
-import { Moon, Sun } from 'lucide-react'
+import { Moon, Sun, Plus, Minus } from 'lucide-react'
 import './App.css'
 
 function App() {
   const [tabs, setTabs] = useState({ 1: '', 2: '', 3: '', 4: '', 5: '', 6: '', 7: '', 8: '', 9: '', 10: '' })
   const [activeTab, setActiveTab] = useState(1)
   const [isDarkMode, setIsDarkMode] = useState(false)
+  const [fontSize, setFontSize] = useState(16)
 
   // Load notes from localStorage on component mount
   useEffect(() => {
     const savedActiveTab = localStorage.getItem('notes-app-active-tab')
     const savedTheme = localStorage.getItem('notes-app-theme')
+    const savedFontSize = localStorage.getItem('notes-app-font-size')
     
     // Load each tab individually for better performance
     const loadedTabs = {}
@@ -29,6 +31,10 @@ function App() {
     if (savedTheme === 'dark') {
       setIsDarkMode(true)
     }
+    
+    if (savedFontSize) {
+      setFontSize(parseInt(savedFontSize))
+    }
   }, [])
 
 
@@ -38,6 +44,10 @@ function App() {
     localStorage.setItem('notes-app-theme', isDarkMode ? 'dark' : 'light')
     document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light')
   }, [isDarkMode])
+
+  useEffect(() => {
+    localStorage.setItem('notes-app-font-size', fontSize.toString())
+  }, [fontSize])
 
   // Prevent browser tab closing when there are unsaved changes
   useEffect(() => {
@@ -78,6 +88,14 @@ function App() {
     setIsDarkMode(!isDarkMode)
   }
 
+  const increaseFontSize = () => {
+    setFontSize(prev => Math.min(prev + 2, 36))
+  }
+
+  const decreaseFontSize = () => {
+    setFontSize(prev => Math.max(prev - 2, 10))
+  }
+
   return (
     <div className="app">
       <button 
@@ -94,18 +112,38 @@ function App() {
         onChange={handleNotesChange}
         placeholder={`Start writing your notes in tab ${activeTab}...`}
         autoFocus
+        style={{ fontSize: `${fontSize}px` }}
       />
       
       <div className="tab-panel">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(tabNumber => (
+        <div className="tab-buttons">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(tabNumber => (
+            <button
+              key={tabNumber}
+              className={`tab-button ${activeTab === tabNumber ? 'active' : ''}`}
+              onClick={() => switchTab(tabNumber)}
+            >
+              {tabNumber}
+            </button>
+          ))}
+        </div>
+        <div className="font-controls">
           <button
-            key={tabNumber}
-            className={`tab-button ${activeTab === tabNumber ? 'active' : ''}`}
-            onClick={() => switchTab(tabNumber)}
+            className="font-control-button"
+            onClick={decreaseFontSize}
+            aria-label="Decrease font size"
           >
-            {tabNumber}
+            <Minus size={14} />
           </button>
-        ))}
+          <span className="font-size-display">{fontSize}px</span>
+          <button
+            className="font-control-button"
+            onClick={increaseFontSize}
+            aria-label="Increase font size"
+          >
+            <Plus size={14} />
+          </button>
+        </div>
       </div>
     </div>
   )

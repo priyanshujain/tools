@@ -96,11 +96,51 @@ body {
   border-top: 1px solid var(--border-color);
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 0;
   z-index: 100;
   transition: background-color 0.3s ease, border-color 0.3s ease;
-  padding-left: 0.25rem;
+  padding: 0 0.25rem;
+}
+
+.tab-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.font-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.font-control-button {
+  width: 1.25rem;
+  height: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 2px;
+  background-color: var(--button-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.font-control-button:hover {
+  background-color: var(--button-hover);
+}
+
+.font-size-display {
+  font-size: 0.65rem;
+  color: var(--text-color);
+  font-weight: 500;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-width: 2rem;
+  text-align: center;
 }
 
 .tab-button {
@@ -155,5 +195,19 @@ body {
     width: 1rem;
     height: 0.875rem;
     font-size: 0.6rem;
+  }
+  
+  .font-control-button {
+    width: 1rem;
+    height: 0.875rem;
+  }
+  
+  .font-size-display {
+    font-size: 0.6rem;
+    min-width: 1.5rem;
+  }
+  
+  .font-controls {
+    gap: 0.125rem;
   }
 }
