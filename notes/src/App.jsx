@@ -6,28 +6,22 @@ function App() {
   const [tabs, setTabs] = useState({ 1: '', 2: '', 3: '', 4: '', 5: '', 6: '', 7: '', 8: '', 9: '', 10: '' })
   const [activeTab, setActiveTab] = useState(1)
   const [isDarkMode, setIsDarkMode] = useState(false)
+  const [hasLoaded, setHasLoaded] = useState(false)
 
   // Load notes from localStorage on component mount
   useEffect(() => {
-    const savedNotes = localStorage.getItem('notes-app-content')
-    const savedTabs = localStorage.getItem('notes-app-tabs')
     const savedActiveTab = localStorage.getItem('notes-app-active-tab')
     const savedTheme = localStorage.getItem('notes-app-theme')
     
-    // Handle backwards compatibility - migrate old single note to tab 1
-    if (savedNotes && !savedTabs) {
-      const newTabs = { 1: savedNotes, 2: '', 3: '', 4: '', 5: '', 6: '', 7: '', 8: '', 9: '', 10: '' }
-      setTabs(newTabs)
-      localStorage.setItem('notes-app-tabs', JSON.stringify(newTabs))
-      localStorage.removeItem('notes-app-content') // Clean up old key
-    } else if (savedTabs) {
-      try {
-        const parsedTabs = JSON.parse(savedTabs)
-        setTabs(parsedTabs)
-      } catch (e) {
-        console.error('Error parsing saved tabs:', e)
-      }
+    // Load each tab individually for better performance
+    const loadedTabs = {}
+    for (let i = 1; i <= 10; i++) {
+      const key = i === 1 ? 'notes-app-content' : `notes-app-content-${i}`
+      const savedContent = localStorage.getItem(key)
+      loadedTabs[i] = savedContent || ''
     }
+    
+    setTabs(loadedTabs)
     
     if (savedActiveTab) {
       setActiveTab(parseInt(savedActiveTab))
@@ -36,12 +30,19 @@ function App() {
     if (savedTheme === 'dark') {
       setIsDarkMode(true)
     }
+    
+    setHasLoaded(true)
   }, [])
 
-  // Save to localStorage whenever tabs or active tab change
+  // Save individual tab content to localStorage for better performance
   useEffect(() => {
-    localStorage.setItem('notes-app-tabs', JSON.stringify(tabs))
-  }, [tabs])
+    if (!hasLoaded) return // Don't save during initial load
+    
+    Object.keys(tabs).forEach(tabNumber => {
+      const key = parseInt(tabNumber) === 1 ? 'notes-app-content' : `notes-app-content-${tabNumber}`
+      localStorage.setItem(key, tabs[tabNumber])
+    })
+  }, [tabs, hasLoaded])
 
   useEffect(() => {
     localStorage.setItem('notes-app-active-tab', activeTab.toString())
@@ -55,8 +56,14 @@ function App() {
   // Prevent browser tab closing when there are unsaved changes
   useEffect(() => {
     const handleBeforeUnload = (e) => {
-      const currentTabs = localStorage.getItem('notes-app-tabs')
-      if (JSON.stringify(tabs) !== currentTabs) {
+      // Check if any tab has unsaved changes
+      const hasUnsavedChanges = Object.keys(tabs).some(tabNumber => {
+        const key = parseInt(tabNumber) === 1 ? 'notes-app-content' : `notes-app-content-${tabNumber}`
+        const savedContent = localStorage.getItem(key) || ''
+        return tabs[tabNumber] !== savedContent
+      })
+      
+      if (hasUnsavedChanges) {
         e.preventDefault()
         e.returnValue = 'You have unsaved changes. Are you sure you want to leave?'
         return 'You have unsaved changes. Are you sure you want to leave?'
