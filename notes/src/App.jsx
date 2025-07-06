@@ -3,7 +3,7 @@ import { Moon, Sun } from 'lucide-react'
 import './App.css'
 
 function App() {
-  const [tabs, setTabs] = useState({ 1: '', 2: '', 3: '' })
+  const [tabs, setTabs] = useState({ 1: '', 2: '', 3: '', 4: '', 5: '', 6: '', 7: '', 8: '', 9: '', 10: '' })
   const [activeTab, setActiveTab] = useState(1)
   const [isDarkMode, setIsDarkMode] = useState(false)
 
@@ -16,7 +16,7 @@ function App() {
     
     // Handle backwards compatibility - migrate old single note to tab 1
     if (savedNotes && !savedTabs) {
-      const newTabs = { 1: savedNotes, 2: '', 3: '' }
+      const newTabs = { 1: savedNotes, 2: '', 3: '', 4: '', 5: '', 6: '', 7: '', 8: '', 9: '', 10: '' }
       setTabs(newTabs)
       localStorage.setItem('notes-app-tabs', JSON.stringify(newTabs))
       localStorage.removeItem('notes-app-content') // Clean up old key
@@ -101,7 +101,7 @@ function App() {
       />
       
       <div className="tab-panel">
-        {[1, 2, 3].map(tabNumber => (
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(tabNumber => (
           <button
             key={tabNumber}
             className={`tab-button ${activeTab === tabNumber ? 'active' : ''}`}
