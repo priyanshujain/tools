@@ -6,7 +6,7 @@
 
 :root {
   --bg-color: #ffffff;
-  --text-color: #333333;
+  --text-color: #000000;
   --border-color: #e0e0e0;
   --button-bg: #ffffff;
   --button-hover: #f0f0f0;
@@ -67,7 +67,7 @@ body {
 
 .notes-textarea {
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 1.5rem);
   border: none;
   outline: none;
   resize: none;
@@ -86,6 +86,95 @@ body {
   font-style: italic;
 }
 
+.tab-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1.5rem;
+  background-color: var(--bg-color);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+  z-index: 100;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  padding: 0 0.25rem;
+}
+
+.tab-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.font-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.font-control-button {
+  width: 1.25rem;
+  height: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 2px;
+  background-color: var(--button-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.font-control-button:hover {
+  background-color: var(--button-hover);
+}
+
+.font-size-display {
+  font-size: 0.65rem;
+  color: var(--text-color);
+  font-weight: 500;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-width: 2rem;
+  text-align: center;
+}
+
+.tab-button {
+  width: 1.25rem;
+  height: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 2px;
+  background-color: var(--button-bg);
+  color: var(--text-color);
+  font-size: 0.65rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin-right: 1px;
+}
+
+.tab-button:hover {
+  background-color: var(--button-hover);
+}
+
+.tab-button.active {
+  background-color: var(--text-color);
+  color: var(--bg-color);
+  border-color: var(--text-color);
+}
+
+.tab-button.active:hover {
+  background-color: var(--text-color);
+}
+
 
 @media (max-width: 768px) {
   .theme-toggle {
@@ -95,5 +184,30 @@ body {
   
   .notes-textarea {
     padding: 1rem;
+    height: calc(100vh - 1.25rem);
+  }
+  
+  .tab-panel {
+    height: 1.25rem;
+  }
+  
+  .tab-button {
+    width: 1rem;
+    height: 0.875rem;
+    font-size: 0.6rem;
+  }
+  
+  .font-control-button {
+    width: 1rem;
+    height: 0.875rem;
+  }
+  
+  .font-size-display {
+    font-size: 0.6rem;
+    min-width: 1.5rem;
+  }
+  
+  .font-controls {
+    gap: 0.125rem;
   }
 }
