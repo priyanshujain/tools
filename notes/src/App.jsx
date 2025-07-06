@@ -6,7 +6,6 @@ function App() {
   const [tabs, setTabs] = useState({ 1: '', 2: '', 3: '', 4: '', 5: '', 6: '', 7: '', 8: '', 9: '', 10: '' })
   const [activeTab, setActiveTab] = useState(1)
   const [isDarkMode, setIsDarkMode] = useState(false)
-  const [hasLoaded, setHasLoaded] = useState(false)
 
   // Load notes from localStorage on component mount
   useEffect(() => {
@@ -30,19 +29,8 @@ function App() {
     if (savedTheme === 'dark') {
       setIsDarkMode(true)
     }
-    
-    setHasLoaded(true)
   }, [])
 
-  // Save individual tab content to localStorage for better performance
-  useEffect(() => {
-    if (!hasLoaded) return // Don't save during initial load
-    
-    Object.keys(tabs).forEach(tabNumber => {
-      const key = parseInt(tabNumber) === 1 ? 'notes-app-content' : `notes-app-content-${tabNumber}`
-      localStorage.setItem(key, tabs[tabNumber])
-    })
-  }, [tabs, hasLoaded])
 
   useEffect(() => {
     localStorage.setItem('notes-app-active-tab', activeTab.toString())
@@ -75,10 +63,12 @@ function App() {
   }, [tabs])
 
   const handleNotesChange = (e) => {
-    setTabs(prev => ({
-      ...prev,
-      [activeTab]: e.target.value
-    }))
+    const newContent = e.target.value
+    setTabs(prev => ({ ...prev, [activeTab]: newContent }))
+    
+    // Save immediately - just this tab
+    const key = activeTab === 1 ? 'notes-app-content' : `notes-app-content-${activeTab}`
+    localStorage.setItem(key, newContent)
   }
 
   const switchTab = (tabNumber) => {
