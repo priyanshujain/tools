@@ -3,16 +3,34 @@ import { Moon, Sun } from 'lucide-react'
 import './App.css'
 
 function App() {
-  const [notes, setNotes] = useState('')
+  const [tabs, setTabs] = useState({ 1: '', 2: '', 3: '' })
+  const [activeTab, setActiveTab] = useState(1)
   const [isDarkMode, setIsDarkMode] = useState(false)
 
   // Load notes from localStorage on component mount
   useEffect(() => {
     const savedNotes = localStorage.getItem('notes-app-content')
+    const savedTabs = localStorage.getItem('notes-app-tabs')
+    const savedActiveTab = localStorage.getItem('notes-app-active-tab')
     const savedTheme = localStorage.getItem('notes-app-theme')
     
-    if (savedNotes) {
-      setNotes(savedNotes)
+    // Handle backwards compatibility - migrate old single note to tab 1
+    if (savedNotes && !savedTabs) {
+      const newTabs = { 1: savedNotes, 2: '', 3: '' }
+      setTabs(newTabs)
+      localStorage.setItem('notes-app-tabs', JSON.stringify(newTabs))
+      localStorage.removeItem('notes-app-content') // Clean up old key
+    } else if (savedTabs) {
+      try {
+        const parsedTabs = JSON.parse(savedTabs)
+        setTabs(parsedTabs)
+      } catch (e) {
+        console.error('Error parsing saved tabs:', e)
+      }
+    }
+    
+    if (savedActiveTab) {
+      setActiveTab(parseInt(savedActiveTab))
     }
     
     if (savedTheme === 'dark') {
@@ -20,10 +38,14 @@ function App() {
     }
   }, [])
 
-  // Save to localStorage whenever notes or theme change
+  // Save to localStorage whenever tabs or active tab change
   useEffect(() => {
-    localStorage.setItem('notes-app-content', notes)
-  }, [notes])
+    localStorage.setItem('notes-app-tabs', JSON.stringify(tabs))
+  }, [tabs])
+
+  useEffect(() => {
+    localStorage.setItem('notes-app-active-tab', activeTab.toString())
+  }, [activeTab])
 
   useEffect(() => {
     localStorage.setItem('notes-app-theme', isDarkMode ? 'dark' : 'light')
@@ -33,8 +55,8 @@ function App() {
   // Prevent browser tab closing when there are unsaved changes
   useEffect(() => {
     const handleBeforeUnload = (e) => {
-      const currentNotes = localStorage.getItem('notes-app-content')
-      if (notes !== currentNotes) {
+      const currentTabs = localStorage.getItem('notes-app-tabs')
+      if (JSON.stringify(tabs) !== currentTabs) {
         e.preventDefault()
         e.returnValue = 'You have unsaved changes. Are you sure you want to leave?'
         return 'You have unsaved changes. Are you sure you want to leave?'
@@ -43,10 +65,17 @@ function App() {
 
     window.addEventListener('beforeunload', handleBeforeUnload)
     return () => window.removeEventListener('beforeunload', handleBeforeUnload)
-  }, [notes])
+  }, [tabs])
 
   const handleNotesChange = (e) => {
-    setNotes(e.target.value)
+    setTabs(prev => ({
+      ...prev,
+      [activeTab]: e.target.value
+    }))
+  }
+
+  const switchTab = (tabNumber) => {
+    setActiveTab(tabNumber)
   }
 
   const toggleTheme = () => {
@@ -65,11 +94,23 @@ function App() {
       
       <textarea
         className="notes-textarea"
-        value={notes}
+        value={tabs[activeTab]}
         onChange={handleNotesChange}
-        placeholder="Start writing your notes..."
+        placeholder={`Start writing your notes in tab ${activeTab}...`}
         autoFocus
       />
+      
+      <div className="tab-panel">
+        {[1, 2, 3].map(tabNumber => (
+          <button
+            key={tabNumber}
+            className={`tab-button ${activeTab === tabNumber ? 'active' : ''}`}
+            onClick={() => switchTab(tabNumber)}
+          >
+            {tabNumber}
+          </button>
+        ))}
+      </div>
     </div>
   )
 }
